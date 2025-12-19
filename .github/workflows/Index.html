@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Dropship Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto px-4 py-12 max-w-6xl">
+        <div class="text-center mb-16">
+            <h1 class="text-5xl md:text-6xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+                🚀 Fast Dropship
+            </h1>
+            <p class="text-xl text-gray-700">Instant Delivery | COD Available</p>
+        </div>
+        
+        <div id="products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Products यहाँ load होंगे -->
+        </div>
+    </div>
+
+    <script>
+        // 🔥 APNA BACKEND URL यहाँ डालना (Step 5 के बाद)
+        const API_URL = 'https://YOUR-BACKEND-URL.loca.lt';
+        const UPI_ID = 'yourupi@paytm'; // 🔥 APNA UPI ID डालो
+        
+        // Products load
+        fetch(`${API_URL}/api/products`)
+            .then(r => r.json())
+            .then(products => {
+                document.getElementById('products').innerHTML = 
+                    products.map((p, i) => `
+                        <div class="bg-white rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all hover:-translate-y-2 border border-white/50">
+                            <div class="w-full h-52 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden mb-6 flex items-center justify-center">
+                                <img src="${p.image}" class="w-4/5 h-4/5 object-contain" alt="${p.name}">
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-4">${p.name}</h2>
+                            <div class="text-4xl font-black text-green-600 mb-6">₹${p.price}</div>
+                            <button onclick="payUPI(${p.price}, '${p.name}')" 
+                                    class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-5 rounded-2xl font-bold text-lg shadow-xl hover:from-green-600 hover:to-emerald-700 transition-all">
+                                💳 ${p.price} GPay/PhonePe से Pay करें
+                            </button>
+                        </div>
+                    `).join('')
+            });
+
+        // UPI Payment
+        function payUPI(amount, name) {
+            const upiLink = `upi://pay?pa=${UPI_ID}&pn=Dropship Store&am=${amount}&cu=INR&tn=Order_${name.replace(/ /g,'_')}`;
+            window.open(upiLink, '_blank');
+            console.log('Payment started:', amount, name);
+        }
+    </script>
+</body>
+</html>
